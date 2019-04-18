@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
@@ -19,6 +20,14 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect({
+        hello: 'world',
+      });
+  });
+
+  // close app once all tests have run
+  afterAll(async done => {
+    await app.close();
+    done();
   });
 });
