@@ -1,33 +1,42 @@
 import 'dotenv/config';
-import { INestApplication } from '@nestjs/common';
-import { Test } from '@nestjs/testing';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import * as mongoose from 'mongoose';
+import { RegisterDTO } from 'src/auth/auth.dto';
+import { HttpStatus } from '@nestjs/common';
 
-describe('AppController (e2e)', () => {
-  let app: INestApplication;
+const app = 'http://localhost:3000';
 
-  beforeAll(async () => {
-    const moduleFixture = await Test.createTestingModule({
-      imports: [AppModule],
-    }).compile();
+beforeAll(async () => {
+  await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
+  await mongoose.connection.dropCollection('users');
+});
 
-    app = moduleFixture.createNestApplication();
-    await app.init();
-  });
+afterAll(async done => {
+  await mongoose.disconnect(done);
+});
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
+describe('ROOT', () => {
+  it('should ping', () => {
+    return request(app)
       .get('/')
       .expect(200)
       .expect({
         hello: 'world',
       });
   });
+});
 
-  // close app once all tests have run
-  afterAll(async done => {
-    await app.close();
-    done();
+describe('AUTH', () => {
+  it('should register', () => {
+    const user: RegisterDTO = {
+      username: 'username',
+      password: 'password',
+    };
+    return request(app)
+      .post('/auth/register')
+      .set('Accept', 'application/json')
+      .send(user)
+      .expect(({ body }) => console.log(body))
+      .expect(HttpStatus.CREATED);
   });
 });
