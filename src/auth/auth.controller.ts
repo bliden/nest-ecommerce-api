@@ -15,19 +15,6 @@ export class AuthController {
     private authService: AuthService,
   ) {}
 
-  @Get()
-  @UseGuards(AuthGuard())
-  tempAuth() {
-    return { auth: 'works' };
-  }
-
-  // DEV only. please remove in future
-  @Get('all')
-  @UseGuards(AuthGuard(), SellerGuard)
-  async getall(@User() user: any) {
-    return await this.userService.findAll();
-  }
-
   @Post('login')
   async login(@Body() userDTO: LoginDTO) {
     const user = await this.userService.findByLogin(userDTO);
