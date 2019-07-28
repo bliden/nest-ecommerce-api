@@ -7,11 +7,12 @@ import { HttpStatus } from '@nestjs/common';
 const app = 'http://localhost:3000';
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
-  await mongoose.connection.dropCollection('users');
+  await mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true });
+  await dropCollections();
 });
 
 afterAll(async done => {
+  await dropCollections();
   await mongoose.disconnect(done);
 });
 
@@ -55,7 +56,7 @@ describe('AUTH', () => {
       .send(user)
       .expect(({ body }) => {
         expect(body.message).toBe('User already exists');
-        expect(body.statusCode).toEqual(HttpStatus.BAD_REQUEST);
+        expect(body.code).toEqual(HttpStatus.BAD_REQUEST);
       })
       .expect(HttpStatus.BAD_REQUEST);
   });
@@ -65,7 +66,6 @@ describe('AUTH', () => {
       username: 'username',
       password: 'password',
     };
-
     return request(app)
       .post('/auth/login')
       .set('Accept', 'application/json')
@@ -78,3 +78,10 @@ describe('AUTH', () => {
       .expect(HttpStatus.CREATED);
   });
 });
+
+async function dropCollections() {
+  const collections = await mongoose.connection.db.collections();
+  for (let collection of collections) {
+    await collection.drop();
+  }
+}

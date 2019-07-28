@@ -1,9 +1,12 @@
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Logger } from '@nestjs/common';
 import { UserService } from 'src/shared/user.service';
 import { RegisterDTO, LoginDTO } from './auth.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { Payload } from 'src/types/payload';
+import { User } from 'src/utilities/user.decorator';
+import { SellerGuard } from 'src/guards/seller.guard';
+import { Mongoose, connection, connections } from 'mongoose';
 
 @Controller('auth')
 export class AuthController {
@@ -16,6 +19,13 @@ export class AuthController {
   @UseGuards(AuthGuard())
   tempAuth() {
     return { auth: 'works' };
+  }
+
+  // DEV only. please remove in future
+  @Get('all')
+  @UseGuards(AuthGuard(), SellerGuard)
+  async getall(@User() user: any) {
+    return await this.userService.findAll();
   }
 
   @Post('login')

@@ -5,17 +5,31 @@ const axios = require('axios');
 let uri = `http://localhost:${process.env.PORT || 3000}/auth/login`;
 
 (async () => {
-  const {
-    data: { token },
-  } = await axios.post(uri, {
-    username: 'username',
-    password: 'password',
-  });
+  try {
+    const {
+      data: { token },
+    } = await axios.post(uri, {
+      username: 'seller',
+      password: 'seller',
+    });
+    // const {
+    //   data: { token },
+    // } = await axios.post(
+    //   `http://localhost:${process.env.PORT || 3000}/auth/register`,
+    //   {
+    //     username: 'seller',
+    //     password: 'seller',
+    //     seller: true,
+    //   },
+    // );
 
-  const { data } = await axios.get(
-    `http://localhost:${process.env.PORT || 3000}/auth`,
-    { headers: { authorization: `Bearer ${token}` } },
-  );
+    const { data } = await axios.get(
+      `http://localhost:${process.env.PORT || 3000}/auth/`,
+      { headers: { authorization: `Bearer ${token}` } },
+    );
 
-  console.log(data);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
 })();
