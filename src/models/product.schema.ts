@@ -9,7 +9,7 @@ export const ProductSchema = new mongoose.Schema(
     title: String,
     description: String,
     image: String,
-    price: String,
+    price: Number,
   },
   {
     timestamps: {},

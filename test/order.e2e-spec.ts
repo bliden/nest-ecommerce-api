@@ -65,32 +65,31 @@ describe('ORDERS', () => {
   it('creates order of all products', () => {
     const orderDTO = {
       products: boughtProducts.map(product => {
-        return { product: product.id, quantity: 1 };
+        return { product: product._id, quantity: 1 };
       }),
     };
 
     return request(app)
-      .post(`order`)
+      .post(`/order`)
       .set('Authorization', `Bearer ${buyerToken}`)
       .set('Accept', 'application/json')
       .send(orderDTO)
       .expect(({ body }) => {
-        // console.log(body);
         expect(body.owner.username).toEqual(orderBuyer.username);
         expect(body.products).toHaveLength(boughtProducts.length);
         expect(
           boughtProducts
             .map(product => product._id)
-            .includes(body.products[0]._id),
+            .includes(body.products[0].product._id),
         ).toBeTruthy();
         expect(
           boughtProducts
             .map(product => product._id)
-            .includes(body.products[1]._id),
+            .includes(body.products[1].product._id),
         ).toBeTruthy();
         expect(body.totalPrice).toEqual(
           boughtProducts.reduce((acc, next) => {
-            return acc + next.price;
+            return acc + +next.price;
           }, 0),
         );
       })
@@ -99,7 +98,7 @@ describe('ORDERS', () => {
 
   it('lists all orders of buyer', () => {
     return request(app)
-      .get('order')
+      .get('/order')
       .set('Authorization', `Bearer ${buyerToken}`)
       .expect(({ body }) => {
         expect(body).toHaveLength(1);
@@ -107,7 +106,7 @@ describe('ORDERS', () => {
         expect(
           boughtProducts
             .map(product => product._id)
-            .includes(body[0].products[0]._id),
+            .includes(body[0].products[0].product._id),
         ).toBeTruthy();
       })
       .expect(HttpStatus.OK);

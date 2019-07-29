@@ -25,13 +25,12 @@ describe('AUTH', () => {
     password: 'password',
     seller: true,
   };
+  let sellerToken: string;
 
   const sellerLogin: LoginDTO = {
     username: 'seller',
     password: 'password',
   };
-
-  let sellerToken: string;
 
   it('should register user', () => {
     return request(app)
@@ -113,7 +112,12 @@ describe('AUTH', () => {
 
 async function dropCollections() {
   const collections = await mongoose.connection.db.collections();
-  for (const collection of collections) {
-    await collection.drop();
-  }
+  // for (const collection of collections) {
+  //   await collection.drop();
+  // }
+  return await Promise.all(
+    Object.keys(collections).map(c => {
+      return collections[c].drop();
+    }),
+  );
 }

@@ -5,12 +5,11 @@ import { AppService } from './app.service';
 import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
+import { OrderModule } from './order/order.module';
 
 if (process.env.NODE_ENV === 'test') {
   process.env.MONGO_URI = process.env.MONGO_URI_TEST;
 }
-
-console.log('connecting to ', process.env.MONGO_URI);
 
 @Module({
   imports: [
@@ -20,6 +19,7 @@ console.log('connecting to ', process.env.MONGO_URI);
     SharedModule,
     AuthModule,
     ProductModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
