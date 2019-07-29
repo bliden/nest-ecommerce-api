@@ -31,7 +31,7 @@ describe('PRODUCTS', () => {
     title: 'phone',
     description: 'mobile',
     image: 'n/a',
-    price: '10',
+    price: 10,
   };
   let productID: string;
 

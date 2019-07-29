@@ -6,7 +6,7 @@ export interface Product extends Document {
   title: string;
   description: string;
   image: string;
-  price: string;
+  price: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -15,7 +15,7 @@ export interface CreateProductDTO {
   title: string;
   description: string;
   image: string;
-  price: string;
+  price: number;
 }
 
 export type UpdateProductDTO = Partial<CreateProductDTO>;
