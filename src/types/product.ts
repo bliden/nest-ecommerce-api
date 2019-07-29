@@ -11,11 +11,11 @@ export interface Product extends Document {
   updatedAt: Date;
 }
 
-export interface ProductDTO {
+export interface CreateProductDTO {
   title: string;
   description: string;
   image: string;
   price: string;
 }
 
-export type UpdateProductDTO = Partial<ProductDTO>;
+export type UpdateProductDTO = Partial<CreateProductDTO>;

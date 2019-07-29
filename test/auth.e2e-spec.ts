@@ -1,17 +1,15 @@
-import 'dotenv/config';
 import * as request from 'supertest';
 import * as mongoose from 'mongoose';
 import { RegisterDTO, LoginDTO } from 'src/auth/auth.dto';
 import { HttpStatus } from '@nestjs/common';
-import { app } from './constants';
+import { app, database } from './constants';
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true });
+  await mongoose.connect(database, { useNewUrlParser: true });
   await dropCollections();
 });
 
 afterAll(async done => {
-  await dropCollections();
   await mongoose.disconnect(done);
 });
 
@@ -103,6 +101,13 @@ describe('AUTH', () => {
         expect(body.user.seller).toBeTruthy();
       })
       .expect(HttpStatus.CREATED);
+  });
+
+  it('respects seller token', () => {
+    return request(app)
+      .get('/product/mine')
+      .set('Authorization', `Bearer ${sellerToken}`)
+      .expect(200);
   });
 });
 

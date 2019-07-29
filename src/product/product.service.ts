@@ -1,6 +1,6 @@
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Product, UpdateProductDTO, ProductDTO } from 'src/types/product';
+import { Product, UpdateProductDTO, CreateProductDTO } from 'src/types/product';
 import { Model } from 'mongoose';
 import { User } from 'src/types/user';
 
@@ -19,10 +19,14 @@ export class ProductService {
   }
 
   async findOne(id: string): Promise<Product> {
-    return await this.productModel.findById(id).populate('owner');
+    const product = await this.productModel.findById(id).populate('owner');
+    if (!product) {
+      throw new HttpException('Product does not exist', HttpStatus.NO_CONTENT);
+    }
+    return product;
   }
 
-  async create(productDTO: ProductDTO, user: User): Promise<Product> {
+  async create(productDTO: CreateProductDTO, user: User): Promise<Product> {
     const product = new this.productModel({
       ...productDTO,
       owner: user,
@@ -36,20 +40,21 @@ export class ProductService {
     partialProductDTO: UpdateProductDTO,
     userID: User,
   ): Promise<Product> {
-    const product = await this.productModel.findById(id);
-    if (product.owner.id.toString() !== userID) {
+    let product: Product = await this.productModel.findById(id);
+    if (product.owner._id.toString() !== userID) {
       throw new HttpException(
         "You don't have ownership of this product.",
         HttpStatus.UNAUTHORIZED,
       );
     }
-    await product.update(partialProductDTO);
-    return product.populate('owner');
+
+    await this.productModel.update({ _id: product._id }, partialProductDTO);
+    return await this.productModel.findById(product.id).populate('owner');
   }
 
   async delete(id: string, userID: User): Promise<Product> {
     const product = await this.productModel.findById(id);
-    if (product.owner.id.toString() !== userID) {
+    if (product.owner._id.toString() !== userID) {
       throw new HttpException(
         "You don't have ownership of this product.",
         HttpStatus.UNAUTHORIZED,

@@ -1,14 +1,13 @@
 import * as request from 'supertest';
 import * as mongoose from 'mongoose';
-import { app } from './constants';
+import { app, database } from './constants';
 
 beforeAll(async () => {
-  await mongoose.connect(process.env.MONGO_URI_TEST, { useNewUrlParser: true });
+  await mongoose.connect(database, { useNewUrlParser: true });
   await dropCollections();
 });
 
 afterAll(async done => {
-  await dropCollections();
   await mongoose.disconnect(done);
 });
 

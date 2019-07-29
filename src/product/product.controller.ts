@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { ProductDTO, UpdateProductDTO } from 'src/types/product';
+import { CreateProductDTO, UpdateProductDTO } from 'src/types/product';
 import { AuthGuard } from '@nestjs/passport';
 import { SellerGuard } from 'src/guards/seller.guard';
 import { User } from 'src/utilities/user.decorator';
@@ -37,7 +37,7 @@ export class ProductController {
 
   @UseGuards(AuthGuard(), SellerGuard)
   @Post('/')
-  async create(@Body() product: ProductDTO, @User() user: UserDocument) {
+  async create(@Body() product: CreateProductDTO, @User() user: UserDocument) {
     return await this.productService.create(product, user);
   }
 

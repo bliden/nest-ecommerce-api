@@ -6,14 +6,15 @@ import { SharedModule } from './shared/shared.module';
 import { AuthModule } from './auth/auth.module';
 import { ProductModule } from './product/product.module';
 
-const dbURI =
-  process.env.NODE_ENV === 'test'
-    ? process.env.MONGO_URI_TEST
-    : process.env.MONGO_URI;
+if (process.env.NODE_ENV === 'test') {
+  process.env.MONGO_URI = process.env.MONGO_URI_TEST;
+}
+
+console.log('connecting to ', process.env.MONGO_URI);
 
 @Module({
   imports: [
-    MongooseModule.forRoot(`${dbURI}`, {
+    MongooseModule.forRoot(`${process.env.MONGO_URI}`, {
       useNewUrlParser: true,
     }),
     SharedModule,
