@@ -13,6 +13,7 @@ if (process.env.NODE_ENV === 'test') {
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   // app.useGlobalInterceptors(new LoggingInterceptor());
+  app.setGlobalPrefix('api');
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

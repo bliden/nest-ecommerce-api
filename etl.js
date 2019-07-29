@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const axios = require('axios');
 
-let uri = `http://localhost:${process.env.PORT || 3000}/auth/login`;
+let uri = `http://localhost:${process.env.PORT || 3000}/api/auth/login`;
 
 (async () => {
   try {
@@ -15,7 +15,7 @@ let uri = `http://localhost:${process.env.PORT || 3000}/auth/login`;
     // const {
     //   data: { token },
     // } = await axios.post(
-    //   `http://localhost:${process.env.PORT || 3000}/auth/register`,
+    //   `http://localhost:${process.env.PORT || 3000}/api/auth/register`,
     //   {
     //     username: 'seller',
     //     password: 'seller',
@@ -24,7 +24,7 @@ let uri = `http://localhost:${process.env.PORT || 3000}/auth/login`;
     // );
 
     const { data } = await axios.get(
-      `http://localhost:${process.env.PORT || 3000}/auth/`,
+      `http://localhost:${process.env.PORT || 3000}/api/auth/`,
       { headers: { authorization: `Bearer ${token}` } },
     );
 
